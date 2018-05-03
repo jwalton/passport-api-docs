@@ -79,17 +79,19 @@ Like `passport.authenticate()`, but this doesn't set req.user or change the sess
 
 Configure a strategy.  Strategies have a "default name" assigned to them, so you don't have to give them a name.
 
-## passport.serializeUser(fn(user, done))
+## passport.serializeUser(fn(user, done) | fn(req, user, done))
 
 Passport will call this to serialize the user to the session.  Should call done(null, user.id).
 
 Undocumented: fn() can be a `fn(req, user, done)`.  If multiple serializers are registered, they are called in order.  Can return 'pass' as err to skip to next serialize.
 
-## passport.deserializeUser(fn(id, done))
+## passport.deserializeUser(fn(serializedUser, done) | fn(req, serializedUser, done))
 
 Passport will call this to deserialize the user from the session.  Should call done(null, user).
 
-Undocumented: fn() can be a `fn(req, user, done)`.  As with serializeUser, serializers are called in order.
+It can happen that a user is stored in the session, but that user is no longer in your database (maybe the user was deleted, or did something to invalidate their session).  In this case, the deserialize function should pass `null` or `false` for the user, not `undefined`.
+
+Undocumented: fn() can be a `fn(req, id, done)`.  As with serializeUser, serializers are called in order.
 
 ## verify callback
 
