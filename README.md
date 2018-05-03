@@ -55,7 +55,21 @@ Valid options:
 * failWithError - On failure, call next() with an AuthenticationError instead of just writing a 401.
 * assignProperty - If provided, then the user will be assigned to `req[assignProperty]` (and to req.user?)
 
-callback is an (err, user, info) function.  No req, res, or next, because you're supposed to get them from the closure.  If authentication fails, user will be false.
+callback is an (err, user, info) function.  No req, res, or next, because you're supposed to get them from the closure.  If authentication fails, user will be false.  If authentication succeeds, your callback is called and *`req.user` is NOT set*.  You need to set it yourself, via `req.login()`:
+
+```js
+app.post('/login', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+        if (err) { return next(err); }
+        if (!user) { return res.redirect('/login'); }
+	
+	// NEED TO CALL req.login()!!!
+        req.login(user, next);
+    })(req, res, next);
+});
+```
+
+Don't just set `req.user = user`, since this won't update your session.
 	
 ## passport.authorize(strategyName\[, options], callback)
 
