@@ -46,7 +46,7 @@ which is using the [built-in "session strategy"](https://github.com/jaredhanson/
 
 strategyName is the name of a strategy you've previously registered with `passport.use(name, ...)`.  This can be an array, in which case the first strategy to succeed, redirect, or error will halt the chain.  Auth failures will proceed through each strategy in series, failing if all fail.
 
-This function returns a middleware which runs the strategies.  If one of the strategies succeeds, this will set `req.user`.  If you pass no options or callback, and all strategies fail, this will return a 401 to the client.
+This function returns a middleware which runs the strategies.  If one of the strategies succeeds, this will set `req.user`.  If you pass no options or callback, and all strategies fail, this will write a 401 to the response.  Note that some strategies may also cause a redirect (OAuth, for example).
 
 Valid options:
 * successRedirect - path to redirect to on a success.
