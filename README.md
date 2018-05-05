@@ -1,5 +1,11 @@
 # Passport: The Hidden Manual
 
+The official [passport documentation](http://www.passportjs.org/docs/) has a long, example driven style.  Some people like that.  Some people, on the other hand, want to know "when I call this function, what's it going to do?"  This is for those people.
+
+If you find inaccuracies, please feel free to open an issue or a PR.
+
+## Passport class
+
 When you `import 'passport'`, you get back an instance of the "Passport" class.  You can create new passport instances:
 
 ```js
@@ -10,15 +16,13 @@ const myPassport = new passport.Passport();
 
 You'd want to do this if you want to use Passport in a library, and you don't want to polute the "global" passport with your authentication strategies.
 
-These are the various functions on a Passport object:
-
-## passport.initialize()
+### passport.initialize()
 
 Returns a middleware which must be called at the start of connect or express based apps.  This sets `req._passport`, which passport uses all over the place.  Calling `app.use(passport.initialize())` for more than one passport instance will cause problems.
 
 This will also set up `req.login()` and `req.logout()`.
 
-## passport.session(\[options])
+### passport.session(\[options])
 
 "If your application uses persistent login sessions, `passport.session()` middleware must also be used."  Should be after your session middleware.
 
@@ -38,7 +42,7 @@ which is using the [built-in "session strategy"](https://github.com/jaredhanson/
 
 `session()` does take an 'options' object.  You can set pass `{pauseStrem: true}` to turn on a hacky work-around for problems with really old node.js versions (pre-v0.10).  Never set this true.
 
-## passport.authenticate(strategyName, \[options | callback])
+### passport.authenticate(strategyName, \[options | callback])
 
 strategyName is the name of a strategy you've previously registered with `passport.use(name, ...)`.  This can be an array, in which case the first strategy to succeed, redirect, or error will halt the chain.  Auth failures will proceed through each strategy in series, failing if all fail.
 
@@ -53,7 +57,6 @@ Valid options:
 * failureMessage - True to store failure message in req.session.messages, or a string to use as override message for failure.
 * session - boolean, enables session support (default true)
 * failWithError - On failure, call next() with an AuthenticationError instead of just writing a 401.
-* assignProperty - If provided, then the user will be assigned to `req[assignProperty]` (and to req.user?)
 
 callback is an (err, user, info) function.  No req, res, or next, because you're supposed to get them from the closure.  If authentication fails, user will be false.  If authentication succeeds, your callback is called and *`req.user` is NOT set*.  You need to set it yourself, via `req.login()`:
 
@@ -71,21 +74,21 @@ app.post('/login', function(req, res, next) {
 
 Don't just set `req.user = user`, since this won't update your session.
 	
-## passport.authorize(strategyName\[, options], callback)
+### passport.authorize(strategyName\[, options], callback)
 
 Like `passport.authenticate()`, but this doesn't set req.user or change the session.  It sets 'req.account' instead.
 
-## passport.use(\[strategyName,] strategy)
+### passport.use(\[strategyName,] strategy)
 
 Configure a strategy.  Strategies have a "default name" assigned to them, so you don't have to give them a name.
 
-## passport.serializeUser(fn(user, done) | fn(req, user, done))
+### passport.serializeUser(fn(user, done) | fn(req, user, done))
 
 Passport will call this to serialize the user to the session.  Should call done(null, user.id).
 
 Undocumented: fn() can be a `fn(req, user, done)`.  If multiple serializers are registered, they are called in order.  Can return 'pass' as err to skip to next serialize.
 
-## passport.deserializeUser(fn(serializedUser, done) | fn(req, serializedUser, done))
+### passport.deserializeUser(fn(serializedUser, done) | fn(req, serializedUser, done))
 
 Passport will call this to deserialize the user from the session.  Should call done(null, user).
 
@@ -93,9 +96,48 @@ It can happen that a user is stored in the session, but that user is no longer i
 
 Undocumented: fn() can be a `fn(req, id, done)`.  As with serializeUser, serializers are called in order.
 
-## verify callback
+# Strategies
+
+## Writing custom strategies
+
+Write a custom strategy by extending the `SessionStrategy` class from [passport-strategy](https://github.com/jaredhanson/passport-strategy).
+
+```js
+import Strategy from 'passport-strategy';
+
+export default class SessionStrategy extends Strategy {
+    constructor() {
+        super();
+
+        // Set the default name of our strategy
+        this.name = 'session';
+    }
+
+    /**
+     * Authenticate a request.
+     *
+     * This function should call exactly one of `this.success(user, info)`, `this.fail(challenge, status)`,
+     * `this.redirect(url, status)`, `this.pass()`, or `this.error(err)`.
+     * See https://github.com/jaredhanson/passport-strategy#augmented-methods.
+     *
+     * @param {Object} req - Request.
+     * @return {void}
+     */
+    authenticate(req) {
+    	if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
+	    this.success({username: 'dave'});	  
+	} else {
+	    this.fail();
+	}
+    }
+}
+```
+
+## Verify Callback
 
 Passport strategies require a verify callback, which is generally a `(err, user, options?)` object.  `options.message` can be used to give a flash message.  `user` should be `false` if the user does not authenticate.  `err` is meant to indicate a server error, like when your DB is unavailable; you shouldn't set `err` if a user fails to authenticate.
+
+# Functions added to the Request
 
 ## req.login(user, callback)
 
