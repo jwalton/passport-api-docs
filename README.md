@@ -42,7 +42,7 @@ which is using the [built-in "session strategy"](https://github.com/jaredhanson/
 
 `session()` does take an 'options' object.  You can set pass `{pauseStrem: true}` to turn on a hacky work-around for problems with really old node.js versions (pre-v0.10).  Never set this true.
 
-### passport.authenticate(strategyName, \[options | callback])
+### passport.authenticate(strategyName\[, options][, callback])
 
 strategyName is the name of a strategy you've previously registered with `passport.use(name, ...)`.  This can be an array, in which case the first strategy to succeed, redirect, or error will halt the chain.  Auth failures will proceed through each strategy in series, failing if all fail.
 
@@ -57,6 +57,8 @@ Valid options:
 * failureMessage - True to store failure message in req.session.messages, or a string to use as override message for failure.
 * session - boolean, enables session support (default true)
 * failWithError - On failure, call next() with an AuthenticationError instead of just writing a 401.
+
+Note that the entire `options` object will be passed on to the strategy as well, so there may be extra options you can pass here defined by the strategy.  For example, you can pass a `callbackURL` along to an [oauth strategy](https://github.com/jaredhanson/passport-oauth1/blob/4f8e3404126ef56b3e564e1e1702f5ede1e9a661/lib/strategy.js#L232).
 
 callback is an (err, user, info) function.  No req, res, or next, because you're supposed to get them from the closure.  If authentication fails, user will be false.  If authentication succeeds, your callback is called and *`req.user` is NOT set*.  You need to set it yourself, via `req.login()`:
 
@@ -121,6 +123,7 @@ export default class SessionStrategy extends Strategy {
      * See https://github.com/jaredhanson/passport-strategy#augmented-methods.
      *
      * @param {Object} req - Request.
+     * @param {Object} options - The options object passed to `passport.authenticate()`.
      * @return {void}
      */
     authenticate(req) {
