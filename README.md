@@ -126,7 +126,7 @@ export default class SessionStrategy extends Strategy {
      * @param {Object} options - The options object passed to `passport.authenticate()`.
      * @return {void}
      */
-    authenticate(req) {
+    authenticate(req, options) {
     	if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
 	    this.success({username: 'dave'});	  
 	} else {
