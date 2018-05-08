@@ -98,11 +98,11 @@ It can happen that a user is stored in the session, but that user is no longer i
 
 Undocumented: fn() can be a `fn(req, id, done)`.  As with serializeUser, serializers are called in order.
 
-# Strategies
+## Strategies
 
-## Writing custom strategies
+### Writing custom strategies
 
-Write a custom strategy by extending the `SessionStrategy` class from [passport-strategy](https://github.com/jaredhanson/passport-strategy).
+Write a custom strategy by extending the `SessionStrategy` class from [passport-strategy](https://github.com/jaredhanson/passport-strategy).  You can unit test a strategy in isolation with [passport-strategy-runner](https://github.com/jwalton/passport-strategy-runner).
 
 ```js
 import Strategy from 'passport-strategy';
@@ -136,21 +136,23 @@ export default class SessionStrategy extends Strategy {
 }
 ```
 
-## Verify Callback
+Note when calling `fail()`, the `challenge` should be a challenge as defined by [RFC 7235 S2.1](https://tools.ietf.org/html/rfc7235#section-2.1), suitable for including in a WWW-Authenticate header.
+
+### Verify Callback
 
 Passport strategies require a verify callback, which is generally a `(err, user, options?)` object.  `options.message` can be used to give a flash message.  `user` should be `false` if the user does not authenticate.  `err` is meant to indicate a server error, like when your DB is unavailable; you shouldn't set `err` if a user fails to authenticate.
 
-# Functions added to the Request
+## Functions added to the Request
 
-## req.login(user, callback)
+### req.login(user, callback)
 
 Log a user in (causes passport to serialize the user to the session).  On completion, req.user will be set.
 
-## req.logout()
+### req.logout()
 
 Removes req.user, and clears the session.
 
-# Passport and Sessions
+## Passport and Sessions
 
 Passport creates a key in the session called `session.passport`.
 
