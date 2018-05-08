@@ -97,7 +97,9 @@ Don't just set `req.user = user`, since this won't update your session.
 	
 ### passport.authorize(strategyName\[, options], callback)
 
-Like `passport.authenticate()`, but this doesn't set req.user or change the session.  It sets 'req.account' instead.
+This isn't really well named, as it has nothing to do with authorization.  This function is exactly like `passport.authenticate()`, but instead of setting `req.user`, it sets `req.account`, and it doesn't make any changes to the session.
+
+This is here so if you want to do something like "Link my account to OtherService", you can have a user who is already logged in, and use Passport to retreive their OtherService credentials.  Useful for linking to social media platforms and such.
 
 ### passport.use(\[strategyName,] strategy)
 
