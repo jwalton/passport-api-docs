@@ -1,5 +1,22 @@
 # Passport: The Hidden Manual
 
+* [Passport class](#passport-class)
+  * [passport.initialize()](#passportinitialize)
+  * [passport.session(options)](#passportsessionoptions)
+  * [passport.authenticate(strategyName, options, callback)](#passportauthenticatestrategyname-options-callback)
+  * [passport.authorize(strategyName, options, callback)](#passportauthorizestrategyname-options-callback)
+  * [passport.use(strategyName, strategy)](#passportusestrategyname-strategy)
+  * [passport.serializeUser(fn(user, done) | fn(req, user, done))](#passportserializeuserfnuser-done--fnreq-user-done)
+  * [passport.deserializeUser(fn(serializedUser, done) | fn(req, serializedUser, done))](#passportdeserializeuserfnserializeduser-done--fnreq-serializeduser-done)
+* [Strategies](#strategies)
+  * [Writing custom strategies](#writing-custom-strategies)
+  * [Verify Callback](#verify-callback)
+* [Functions added to the Request](#functions-added-to-the-request)
+  * [req.login(user, callback)](#reqloginuser-callback)
+  * [req.logout()](#reqlogout)
+* [Passport and Sessions](#passport-and-sessions)
+
+
 The official [passport documentation](http://www.passportjs.org/docs/) has a long, example driven style.  Some people like that.  Some people, on the other hand, want to know "when I call this function, what's it going to do?"  This is for those people.
 
 If you find inaccuracies, please feel free to open an issue or a PR.
