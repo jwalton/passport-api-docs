@@ -157,7 +157,7 @@ export default class SessionStrategy extends Strategy {
 }
 ```
 
-Note when calling `fail()`, the `challenge` should be a challenge as defined by [RFC 7235 S2.1](https://tools.ietf.org/html/rfc7235#section-2.1), suitable for including in a WWW-Authenticate header.
+Note when calling `fail()`, the `challenge` should be either a challenge string as defined by [RFC 7235 S2.1](https://tools.ietf.org/html/rfc7235#section-2.1), suitable for including in a WWW-Authenticate header, or else a `{message, type}` object, were `message` is the message to use a a "flash message", and `type` is the flash type (defaults to 'error').
 
 ### Verify Callback
 
