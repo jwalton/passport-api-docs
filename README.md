@@ -1,5 +1,6 @@
 # Passport: The Hidden Manual
 
+* [Intro](#intro)
 * [Passport class](#passport-class)
   * [passport.initialize()](#passportinitialize)
   * [passport.session(options)](#passportsessionoptions)
@@ -16,6 +17,7 @@
   * [req.logout()](#reqlogout)
 * [Passport and Sessions](#passport-and-sessions)
 
+## Intro
 
 The official [passport documentation](http://www.passportjs.org/docs/) has a long, example driven style.  Some people like that.  Some people, on the other hand, want to know "when I call this function, what's it going to do?"  This is for those people.
 
