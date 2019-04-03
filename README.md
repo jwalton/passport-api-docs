@@ -1,5 +1,9 @@
 # Passport: The Hidden Manual
 
+* [Russian Translation](https://github.com/jwalton/passport-api-docs/blob/master/README_RU.md)
+
+## Table of Contents
+
 * [Intro](#intro)
 * [Passport class](#passport-class)
   * [passport.initialize()](#passportinitialize)
