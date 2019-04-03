@@ -1,6 +1,6 @@
 # Passport: The Hidden Manual
 
-* [Russian Translation](https://github.com/jwalton/passport-api-docs/blob/master/README_RU.md)
+* [Russian Translation](https://github.com/jwalton/passport-api-docs/blob/master/README_RU.md) courtesy of [@kirillurgant](https://github.com/kirillurgant)
 
 ## Table of Contents
 
