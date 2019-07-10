@@ -29,7 +29,7 @@ If you find inaccuracies, please feel free to open an issue or a PR.
 
 ## Passport class
 
-When you `import 'passport'`, you get back an instance of the "Passport" class.  You can create new passport instances:
+When you `import 'passport'`, you get back a reference to the "Passport" class.  You can create new passport instances:
 
 ```js
 import passport from 'passport';
