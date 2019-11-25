@@ -63,7 +63,7 @@ app.use(passport.authenticate('session'));
 
 which is using the [built-in "session strategy"](https://github.com/jaredhanson/passport/blob/2327a36e7c005ccc7134ad157b2f258b57aa0912/lib/strategies/session.js).  You can customize this behavior by registering your own session strategy.
 
-`session()` does take an 'options' object.  You can set pass `{pauseStrem: true}` to turn on a hacky work-around for problems with really old node.js versions (pre-v0.10).  Never set this true.
+`session()` does take an 'options' object.  You can set pass `{pauseStream: true}` to turn on a hacky work-around for problems with really old node.js versions (pre-v0.10).  Never set this true.
 
 ### passport.authenticate(strategyName\[, options][, callback])
 
