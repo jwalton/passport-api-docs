@@ -111,13 +111,15 @@ Configure a strategy.  Strategies have a "default name" assigned to them, so you
 
 ### passport.serializeUser(fn(user, done) | fn(req, user, done))
 
-Passport will call this to serialize the user to the session.  Should call done(null, user.id).
+Passport will call this to serialize the user to the session whenever you login a user with `req.login()`, or whenever a user is authenticated via `passport.authenticate()`.  The function you pass in should call `done(null, serializedUser)`.  
 
-Undocumented: fn() can be a `fn(req, user, done)`.  If multiple serializers are registered, they are called in order.  Can return 'pass' as err to skip to next serialize.
+What this is going to do is set `req.session.passport.user = serializedUser`.  Traditionally you'd make `serializedUser` some sort of string, like a user ID which you can fetch from your DB.  Assuming whatever sessions middleware you're using can store arbitrary objects, though, you can make `serializedUser` an arbitrary JSON object.  If your session middleware is writing the session to a client side cookie (like a JWT session that's stored in a cookie, or [client-sessions](https://github.com/mozilla/node-client-sessions)), then don't store anything too huge in here - browsers will ignore your cookie if it's too big.
+
+Undocumented: The fn() you pass can be a `fn(req, user, done)`.  If multiple serializers are registered, they are called in order.  Can return 'pass' as err to skip to next serialize.
 
 ### passport.deserializeUser(fn(serializedUser, done) | fn(req, serializedUser, done))
 
-Passport will call this to deserialize the user from the session.  Should call done(null, user).
+Passport will call this to deserialize the user from the session.  Should call done(null, user).  The `serializedUser` is `req.session.passport.user`.
 
 It can happen that a user is stored in the session, but that user is no longer in your database (maybe the user was deleted, or did something to invalidate their session).  In this case, the deserialize function should pass `null` or `false` for the user, not `undefined`.
 
