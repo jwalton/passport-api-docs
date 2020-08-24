@@ -37,7 +37,7 @@ import passport from 'passport';
 const myPassport = new passport.Passport();
 ```
 
-You'd want to do this if you want to use Passport in a library, and you don't want to polute the "global" passport with your authentication strategies.
+You'd want to do this if you want to use Passport in a library, and you don't want to pollute the "global" passport with your authentication strategies.
 
 ### passport.initialize()
 
