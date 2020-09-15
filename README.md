@@ -177,7 +177,7 @@ Log a user in (causes passport to serialize the user to the session).  On comple
 
 ### req.logout()
 
-Removes req.user, and clears the session.
+Removes req.user, and clears the `session.passport` value from the session.
 
 ## Passport and Sessions
 
