@@ -37,7 +37,7 @@ const myPassport = new passport.Passport();
 
 ### passport.initialize()
 
-Возвращает middleware которая должная быть вызвана при старте приложения основанного на connect или express. Она устанавливает `req._passport`, который используетcя passport повсюду. Вызов `app.use(passport.initialize())` для более чем одного экземпляра passport будет иметь проблемы.
+Возвращает middleware которая должна быть вызвана при старте приложения основанного на connect или express. Она устанавливает `req._passport`, который используетcя passport повсюду. Вызов `app.use(passport.initialize())` для более чем одного экземпляра passport будет иметь проблемы.
 
 Это так же установит `req.login()` и `req.logout()`.
 
