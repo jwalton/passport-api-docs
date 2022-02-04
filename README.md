@@ -43,7 +43,7 @@ You'd want to do this if you want to use Passport in a library, and you don't wa
 
 Returns a middleware which must be called at the start of connect or express based apps.  This sets `req._passport`, which passport uses all over the place.  Calling `app.use(passport.initialize())` for more than one passport instance will cause problems.
 
-This will also set up `req.login()` and `req.logout()`.
+(Prior to v0.5.1, this would also set up `req.login()` and `req.logout()`, but this has been moved to `passport.authenticate()`.)
 
 ### passport.session(\[options])
 
@@ -69,9 +69,10 @@ which is using the [built-in "session strategy"](https://github.com/jaredhanson/
 
 strategyName is the name of a strategy you've previously registered with `passport.use(name, ...)`.  This can be an array, in which case the first strategy to succeed, redirect, or error will halt the chain.  Auth failures will proceed through each strategy in series, failing if all fail.
 
-This function returns a middleware which runs the strategies.  If one of the strategies succeeds, this will set `req.user`.  If you pass no options or callback, and all strategies fail, this will write a 401 to the response.  Note that some strategies may also cause a redirect (OAuth, for example).
+This function returns a middleware which runs the strategies.  If one of the strategies succeeds, this will set `req.user`.  If you pass no options or callback, and all strategies fail, this will write a 401 to the response.  Note that some strategies may also cause a redirect (OAuth, for example).  This middleware also adds helper functions to the `req` object: `req.login()`, `req.logout()`, and `req.isAuthenticated()`.
 
 Valid options:
+
 * successRedirect - path to redirect to on a success.
 * failureRedirect - path to redirect to on a failure (instead of 401).
 * failureFlash - True to flash failure messages or a string to use as a flash message for failures (overrides any from the strategy itself).
@@ -90,15 +91,15 @@ app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) { return res.redirect('/login'); }
-	
-	// NEED TO CALL req.login()!!!
+
+    // NEED TO CALL req.login()!!!
         req.login(user, next);
     })(req, res, next);
 });
 ```
 
 Don't just set `req.user = user`, since this won't update your session.
-	
+
 ### passport.authorize(strategyName\[, options], callback)
 
 This isn't really well named, as it has nothing to do with authorization.  This function is exactly like `passport.authenticate()`, but instead of setting `req.user`, it sets `req.account`, and it doesn't make any changes to the session.
@@ -111,7 +112,7 @@ Configure a strategy.  Strategies have a "default name" assigned to them, so you
 
 ### passport.serializeUser(fn(user, done) | fn(req, user, done))
 
-Passport will call this to serialize the user to the session whenever you login a user with `req.login()`, or whenever a user is authenticated via `passport.authenticate()`.  The function you pass in should call `done(null, serializedUser)`.  
+Passport will call this to serialize the user to the session whenever you login a user with `req.login()`, or whenever a user is authenticated via `passport.authenticate()`.  The function you pass in should call `done(null, serializedUser)`.
 
 What this is going to do is set `req.session.passport.user = serializedUser`.  Traditionally you'd make `serializedUser` some sort of string, like a user ID which you can fetch from your DB.  Assuming whatever sessions middleware you're using can store arbitrary objects, though, you can make `serializedUser` an arbitrary JSON object.  If your session middleware is writing the session to a client side cookie (like a JWT session that's stored in a cookie, or [client-sessions](https://github.com/mozilla/node-client-sessions)), then don't store anything too huge in here - browsers will ignore your cookie if it's too big.
 
@@ -154,11 +155,11 @@ export default class SessionStrategy extends Strategy {
      * @return {void}
      */
     authenticate(req, options) {
-    	if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
-	    this.success({username: 'dave'});	  
-	} else {
-	    this.fail();
-	}
+        if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
+        this.success({username: 'dave'});
+    } else {
+        this.fail();
+    }
     }
 }
 ```

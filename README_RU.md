@@ -39,8 +39,6 @@ const myPassport = new passport.Passport();
 
 Возвращает middleware которая должная быть вызвана при старте приложения основанного на connect или express. Она устанавливает `req._passport`, который используетcя passport повсюду. Вызов `app.use(passport.initialize())` для более чем одного экземпляра passport будет иметь проблемы.
 
-Это так же установит `req.login()` и `req.logout()`.
-
 ### passport.session(\[options])
 
 "Если ваше приложение использует сессии, `passport.session()` так же должно быть установлено." Оно должно следовать после вашего промежуточного ПО для сессий.
@@ -65,9 +63,10 @@ app.use(passport.authenticate('session'));
 
 strategyName - это имя стратегии, которую вы зарегистрировали ранее с помощью `passport.use(name, ...)`. Это может быть массив и в таком случае сперва идет стратегия успеха, затем редирект или обработчик ошибки. Неудачная аутентификация будет проходить через каждую стратегию в цепочке до последнего обработчика, если все они проваляться.
 
-Данная функция возвращает middleware которая запускает стратегии. Если одна из стратегий пройдет успешно, будет установлен `req.user`. Если вы не передали options или callback, и все стратегии провалились, то будет записан 401 статус в ответе. Заметим что некоторые стратегии могут так же вызывать редирект (например OAuth).
+Данная функция возвращает middleware которая запускает стратегии. Если одна из стратегий пройдет успешно, будет установлен `req.user`. Если вы не передали options или callback, и все стратегии провалились, то будет записан 401 статус в ответе. Заметим что некоторые стратегии могут так же вызывать редирект (например OAuth). Это так же установит `req.login()`, `req.logout()` и `req.isAuthenticated()`.
 
 Допустимые options:
+
 * successRedirect - путь редиректа в случае успеха.
 * failureRedirect - путь редиректа в случае неудачи (вместо 401).
 * failureFlash - `true` для flash сообщения с ошибкой или `string` для использования в качестве сообщения об ошибке (переопределяет любые сообщения из самой стратегии).
@@ -86,8 +85,8 @@ app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
         if (err) { return next(err); }
         if (!user) { return res.redirect('/login'); }
-	
-	// НУЖНО ВЫЗВАТЬ req.login()!!!
+
+    // НУЖНО ВЫЗВАТЬ req.login()!!!
         req.login(user, next);
     })(req, res, next);
 });
@@ -148,11 +147,11 @@ export default class SessionStrategy extends Strategy {
      * @return {void}
      */
     authenticate(req, options) {
-    	if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
-	    this.success({username: 'dave'});	  
-	} else {
-	    this.fail();
-	}
+        if(req.cookie.apikey === '6398d011-d80f-4db1-a36a-5dcee2e259d0') {
+        this.success({username: 'dave'});
+    } else {
+        this.fail();
+    }
     }
 }
 ```
